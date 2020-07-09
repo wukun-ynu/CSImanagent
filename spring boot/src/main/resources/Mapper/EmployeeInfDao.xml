@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.demo.dao.EmployeeInfDao">
+    <resultMap id="employeeJobDept" type="com.test.demo.entity.EmployeeInf">
+        <id column="employee_id" property="employeeId"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="job_id" property="jobId"/>
+        <result column="name" property="name"/>
+        <result column="card_id" property="cardId"/>
+        <result column="address" property="address"/>
+        <result column="post_code" property="postCode"/>
+        <result column="tel" property="tel"/>
+        <result column="phone" property="phone"/>
+        <result column="qq_num" property="qqNum"/>
+        <result column="email" property="email"/>
+        <result column="sex" property="sex"/>
+        <result column="party" property="party"/>
+        <result column="birthday" property="birthday"/>
+        <result column="race" property="race"/>
+        <result column="education" property="education"/>
+        <result column="specility" property="specility"/>
+        <result column="hobby" property="hobby"/>
+        <result column="remark" property="remark"/>
+        <association property="deptInf" column="dept_id" javaType="com.test.demo.entity.DeptInf">
+            <id column="dept_id" property="deptId"/>
+            <result column="dept_name" property="deptName"/>
+            <result column="dept_remark" property="deptRemark"/>
+        </association>
+        <association property="jobInf" column="job_id" javaType="com.test.demo.entity.JobInf">
+            <id column="job_id" property="jobId"/>
+            <result column="job_name" property="jobName"/>
+            <result column="job_remark" property="jobRemark"/>
+        </association>
+    </resultMap>
+    <select id="queryEmployeeInfList" resultMap="employeeJobDept">
+        SELECT
+        e.*,
+        d.*,
+        j.*
+        FROM
+        employee_inf as e, dept_inf as d, job_inf as j
+        where
+        e.dept_id = d.dept_id and e.job_id = j.job_id
+    </select>
+    <select id="queryEmployeeInfPage" resultMap="employeeJobDept">
+        SELECT
+        e.*,
+        d.*,
+        j.*
+        FROM
+        employee_inf as e, dept_inf as d, job_inf as j
+        where
+        e.dept_id = d.dept_id and e.job_id = j.job_id
+        order by
+        e.employee_id
+        asc
+        LIMIT #{rowIndex},#{pageSize};
+    </select>
+    <select id="queryEmployeeInfCount" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        employee_inf as e, dept_inf as d, job_inf as j
+        where
+        e.dept_id = d.dept_id and e.job_id = j.job_id
+    </select>
+    <select id="queryEmployeeByCondition" resultMap="employeeJobDept">
+        select
+        e.*,
+        d.*,
+        j.*
+        FROM
+        employee_inf as e, dept_inf as d, job_inf as j
+        <where>
+            <if test="employeeInfCondition.deptId != null">
+                and e.dept_id = #{employeeInfCondition.deptId}
+            </if>
+            <if test="employeeInfCondition.jobId != null">
+                and e.job_id = #{employeeInfCondition.jobId}
+            </if>
+            <if test="employeeInfCondition.name != null">
+                and e.name like '%${employeeInfCondition.name}%'
+            </if>
+            <if test="employeeInfCondition.cardId != null">
+                and e.card_id like '%${employeeInfCondition.cardId}%'
+            </if>
+            <if test="employeeInfCondition.tel != null">
+                and e.tel like '%${employeeInfCondition.tel}%'
+            </if>
+            <if test="employeeInfCondition.sex != null">
+                and e.sex = #{employeeInfCondition.sex}
+            </if>
+            and
+            e.dept_id = d.dept_id and e.job_id = j.job_id
+        </where>
+        order by
+        e.employee_id
+        asc
+        LIMIT #{rowIndex},#{pageSize};
+    </select>
+    <select id="queryEmployeeConditionCount" resultType="int">
+        select
+        count(*)
+        FROM
+        employee_inf as e, dept_inf as d, job_inf as j
+        <where>
+            <if test="employeeInfCondition.deptId != null">
+                and e.dept_id = #{employeeInfCondition.deptId}
+            </if>
+            <if test="employeeInfCondition.jobId != null">
+                and e.job_id = #{employeeInfCondition.jobId}
+            </if>
+            <if test="employeeInfCondition.name != null">
+                and e.name like '%${employeeInfCondition.name}%'
+            </if>
+            <if test="employeeInfCondition.cardId != null">
+                and e.card_id like '%${employeeInfCondition.cardId}%'
+            </if>
+            <if test="employeeInfCondition.tel != null">
+                and e.tel like '%${employeeInfCondition.tel}%'
+            </if>
+            <if test="employeeInfCondition.sex != null">
+                and e.sex = #{employeeInfCondition.sex}
+            </if>
+            and
+            e.dept_id = d.dept_id and e.job_id = j.job_id
+        </where>
+    </select>
+    <insert id="insertEmployeeInf" parameterType="com.test.demo.entity.EmployeeInf"
+            useGeneratedKeys="true" keyColumn="employee_id" keyProperty="employeeId">
+        insert into
+        employee_inf(dept_id,
+        job_id,
+        name,
+        card_id,
+        address,
+        post_code,
+        tel,
+        phone,
+        qq_num,
+        email,
+        sex,
+        party,
+        birthday,
+        race,
+        education,
+        specility,
+        hobby,
+        remark)
+        values (#{deptId},
+        #{jobId},
+        #{name},
+        #{cardId},
+        #{address},
+        #{postCode},
+        #{tel},#{phone},
+        #{qqNum},
+        #{email},
+        #{sex},
+        #{party},
+        #{birthday},
+        #{race},
+        #{education},
+        #{specility},
+        #{hobby},
+        #{remark});
+    </insert>
+    <update id="updateEmployeeInf" parameterType="com.test.demo.entity.EmployeeInf">
+        update
+        employee_inf
+        <set>
+            <if test="deptId != null">
+                employee_inf.dept_id = #{deptId},
+            </if>
+            <if test="jobId != null">
+                employee_inf.job_id = #{jobId},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="cardId != null">
+                card_id = #{cardId},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+            <if test="postCode != null">
+                post_code = #{postCode},
+            </if>
+            <if test="tel != null">
+                tel = #{tel},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="qqNum != null">
+                qq_num = #{qqNum},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="party != null">
+                party = #{party},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="race !=null">
+                race = #{race},
+            </if>
+            <if test="education != null">
+                education = #{education},
+            </if>
+            <if test="specility != null">
+                specility = #{specility},
+            </if>
+            <if test="hobby !=null">
+                hobby = #{hobby},
+            </if>
+            <if test="remark !=null">
+                remark = #{remark},
+            </if>
+        </set>
+        where
+        employee_id = #{employeeId}
+    </update>
+    <delete id="deleteEmployeeInf" parameterType="Long">
+        delete
+        from
+        employee_inf
+        where
+        employee_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>

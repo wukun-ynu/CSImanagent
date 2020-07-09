@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.demo.dao.JobInfDao">
+    <select id="jobInfList" resultType="com.test.demo.entity.JobInf">
+        SELECT
+        job_id,
+        job_name,
+        job_remark
+        FROM
+        job_inf
+    </select>
+    <select id="queryJobInfList" resultType="com.test.demo.entity.JobInf">
+        SELECT
+        job_id,
+        job_name,
+        job_remark
+        FROM
+        job_inf
+        order by
+        job_id asc
+        LIMIT #{rowIndex},#{pageSize};
+    </select>
+    <select id="queryJobInfCount" resultType="int">
+        select
+        count(1)
+        from
+        job_inf
+    </select>
+    <select id="queryJobInfById" resultType="com.test.demo.entity.JobInf">
+        select
+        job_id,
+        job_name,
+        job_remark
+        from
+        job_inf
+        <where>
+            <if test="jobInfCondition.jobName !=null">
+                and job_name like '%${jobInfCondition.jobName}%'
+            </if>
+        </where>
+        order by
+        job_id asc
+        LIMIT #{rowIndex},#{pageSize};
+    </select>
+    <select id="queryUserInfConditionCount" resultType="int">
+        select
+        count(1)
+        from
+        job_inf
+        <where>
+            <if test="jobInfCondition.jobName !=null">
+                and job_name like '%${jobInfCondition.jobName}%'
+            </if>
+        </where>
+    </select>
+    <insert id="insertJobInf" parameterType="com.test.demo.entity.JobInf"
+            useGeneratedKeys="true" keyProperty="jobId" keyColumn="job_id">
+        insert into
+        job_inf(job_name, job_remark)
+        values (#{jobName}, #{jobRemark})
+    </insert>
+
+    <update id="updateJobInf" parameterType="com.test.demo.entity.JobInf">
+        update
+        job_inf
+        <set>
+            <if test="jobName != null">
+                job_name = #{jobName},
+            </if>
+            <if test="jobRemark != null">
+                job_remark = #{jobRemark},
+            </if>
+        </set>
+        where
+        job_id = #{jobId}
+    </update>
+    <delete id="deleteJobInf" parameterType="Long">
+        delete
+        from
+        job_inf
+        where
+        job_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

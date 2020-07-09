@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.demo.dao.DeptInfDao">
+    <select id="deptInfList" resultType="com.test.demo.entity.DeptInf">
+        SELECT
+        dept_id,
+        dept_name,
+        dept_remark
+        FROM
+        dept_inf
+    </select>
+    <select id="queryDeptInfList" resultType="com.test.demo.entity.DeptInf">
+        SELECT
+        dept_id,
+        dept_name,
+        dept_remark
+        FROM
+        dept_inf
+        order by
+        dept_id asc
+        LIMIT #{rowIndex},#{pageSize};
+    </select>
+    <select id="queryDeptInfCount" resultType="int">
+        select
+        count(1)
+        from
+        dept_inf
+    </select>
+    <select id="queryDeptInfById" resultType="com.test.demo.entity.DeptInf">
+        select
+        dept_id,
+        dept_name,
+        dept_remark
+        from
+        dept_inf
+        <where>
+            <if test="DeptInfCondition.deptName != null">
+                and dept_name like '%${DeptInfCondition.deptName}%'
+            </if>
+        </where>
+        order by
+        dept_id asc
+        LIMIT #{rowIndex},#{pageSize};
+    </select>
+    <select id="queryDeptConditionCount" resultType="int">
+        select
+        count(1)
+        from
+        dept_inf
+        <where>
+            <if test="DeptInfCondition.deptName != null">
+                and dept_name like '%${DeptInfCondition.deptName}%'
+            </if>
+        </where>
+    </select>
+    <insert id="insertDeptInf" parameterType="com.test.demo.entity.DeptInf"
+            useGeneratedKeys="true" keyProperty="deptId" keyColumn="dept_id">
+        insert
+        dept_inf(dept_name,dept_remark)
+        values
+        (#{deptName}, #{deptRemark})
+    </insert>
+    <update id="updateDeptInf" parameterType="com.test.demo.entity.DeptInf">
+        update
+        dept_inf
+        <set>
+            <if test="deptName != null">
+                dept_name = #{deptName},
+            </if>
+            <if test="deptRemark != null">
+                dept_remark = #{deptRemark},
+            </if>
+        </set>
+        where
+        dept_id = #{deptId}
+    </update>
+    <delete id="deleteDeptInf" parameterType="Long">
+        delete from
+        dept_inf
+        where
+        dept_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>
